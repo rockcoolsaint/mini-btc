@@ -9,6 +9,7 @@ mod cli;
 mod transaction;
 mod tx;
 mod wallets;
+mod utxoset;
 
 fn main() -> Result<()>{
     let mut cli = Cli::new()?;

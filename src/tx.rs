@@ -24,6 +24,12 @@ pub struct TXOutput {
   pub pub_key_hash: Vec<u8>,
 }
 
+// TXOutputs collects TXOutput
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct TXOutputs {
+    pub outputs: Vec<TXOutput>,
+}
+
 impl TXInput {
   /// CanUnlockOutputWith checks whether the address initiated the transaction
   pub fn can_unlock_output_with(&self, unlocking_data: &[u8]) -> bool {

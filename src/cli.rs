@@ -5,6 +5,7 @@ use crate::blockchain::Blockchain;
 use crate::errors::Result;
 // use crate::server::Server;
 use crate::transaction::Transaction;
+use crate::utxoset::UTXOSet;
 // use crate::utxoset::UTXOSet;
 use crate::wallets::{Wallet, Wallets};
 
