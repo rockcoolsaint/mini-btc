@@ -3,10 +3,11 @@ use std::time::SystemTime;
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 use log::info;
+use serde::{Deserialize, Serialize};
 
 const TARGET_HEXT: usize = 4;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Block {
   timestamp: u128,
   transactions: String,
@@ -22,6 +23,7 @@ impl Block {
   pub fn get_prev_hash(&self) -> String {
     self.prev_block_hash.clone()
   }
+  pub fn get_hash(&self) -> String { self.hash.clone() }
   /// newGenesisBlock
   pub fn new_genesis_block() -> Block {
     Block::new_block(String::from("Genesis Block"), String::new(), 0).unwrap()

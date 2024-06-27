@@ -126,7 +126,7 @@ impl Cli {
       // }
 
       if let Some(_) = matches.subcommand_matches("printchain") {
-          self.print_chain()?;
+          self.print_chain();
       }
 
       Ok(())
@@ -138,7 +138,7 @@ impl Cli {
 
   fn print_chain(&mut self) {
     for b in &mut self.bc.iter() {
-      println!("block: {:?}", b);
+      println!("block: {:#?}", b);
     }
   }
 }

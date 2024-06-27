@@ -1,10 +1,10 @@
 use crate::block::Block;
 use crate::errors::Result;
-use serde::{Serialize, Deserialize};
 
 const TARGET_HEXT: usize = 4;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+
+#[derive(Debug)]
 pub struct Blockchain {
   current_hash: String,
   db: sled::Db
@@ -20,7 +20,7 @@ impl Blockchain {
     let db = sled::open("data/blocks")?;
     match db.get("LAST")? {
       Some(hash) => {
-        let lasthash = String::from_utf8(hash).to_vec()?;
+        let lasthash = String::from_utf8(hash.to_vec())?;
         Ok(Blockchain {
           current_hash: lasthash,
           db
@@ -59,7 +59,7 @@ impl Blockchain {
 }
 
 impl<'a> Iterator for BlockchainIter<'a> {
-  type Item = &'a Block;
+  type Item = Block;
 
   fn next(&mut self) -> Option<Self::Item> {
     if let Ok(encode_block) = self.bc.db.get(&self.current_hash) {
@@ -67,7 +67,7 @@ impl<'a> Iterator for BlockchainIter<'a> {
         Some(b) => {
           if let Ok(block) = bincode::deserialize::<Block>(&b) {
             self.current_hash = block.get_prev_hash();
-            Some(&block)
+            Some(block)
             } else {
               None
             }
@@ -86,9 +86,13 @@ mod tests {
   #[test]
   fn test_blockchain() {
     let mut b = Blockchain::new().unwrap();
-    b.add_block("data".to_String());
-    b.add_block("data2".to_String());
-    b.add_block("data3".to_String());
+    b.add_block("data".to_string());
+    b.add_block("data2".to_string());
+    b.add_block("data3".to_string());
     dbg!(b);
+
+    for item in b.iter() {
+      println!("item: {:?}", item);
+    }
   }
 }
