@@ -133,7 +133,7 @@ impl Cli {
   }
 
   fn addblock(&mut self, data: String) -> Result<()> {
-    self.bc.add_block(data)
+    self.bc.add_block(vec![])
   }
 
   fn print_chain(&mut self) {
