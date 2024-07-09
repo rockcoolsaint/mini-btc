@@ -3,14 +3,15 @@
 pub struct TXInput {
   pub txid: String,
   pub vout: i32,
-  pub script_sig: String,
+  pub signature: Vec<u8>,
+  pub pub_key: Vec<u8>,
 }
 
 /// TXInput represents a transaction output
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TXOutput {
   pub value: i32,
-  pub script_pub_key: String,
+  pub pub_key_hash: Vec<u8>,
 }
 
 impl TXInput {

@@ -162,6 +162,43 @@ impl Blockchain {
       bc: &self,
     }
   }
+
+  /// FindTransaction finds a transaction by its ID
+  pub fn find_transacton(&self, id: &str) -> Result<Transaction> {
+    for b in self.iter() {
+      for tx in b.get_transaction() {
+          if tx.id == id {
+              return Ok(tx.clone());
+          }
+      }
+    }
+    Err(format_err!("Transaction is not found"))
+  }
+
+  fn get_prev_TXs(&self, tx: &Transaction) -> Result<HashMap<String, Transaction>> {
+    let mut prev_TXs = HashMap::new();
+    for vin in &tx.vin {
+        let prev_TX = self.find_transacton(&vin.txid)?;
+        prev_TXs.insert(prev_TX.id.clone(), prev_TX);
+    }
+    Ok(prev_TXs)
+  }
+
+  /// SignTransaction signs inputs of a Transaction
+  pub fn sign_transacton(&self, tx: &mut Transaction, private_key: &[u8]) -> Result<()> {
+    let prev_TXs = self.get_prev_TXs(tx)?;
+    tx.sign(private_key, prev_TXs)?;
+    Ok(())
+  }
+
+  /// VerifyTransaction verifies transaction input signatures
+  pub fn verify_transacton(&self, tx: &Transaction) -> Result<bool> {
+    if tx.is_coinbase() {
+        return Ok(true);
+    }
+    let prev_TXs = self.get_prev_TXs(tx)?;
+    tx.verify(prev_TXs)
+  }
 }
 
 impl<'a> Iterator for BlockchainIter<'a> {
