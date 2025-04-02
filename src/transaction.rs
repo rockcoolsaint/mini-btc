@@ -7,6 +7,7 @@ use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use crate::blockchain::Blockchain;
 use crate::tx::{TXInput, TXOutput};
+
 /// Transaction represents a Bitcoin transaction
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Transaction {
