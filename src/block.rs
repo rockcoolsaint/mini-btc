@@ -28,11 +28,14 @@ impl Block {
   pub(crate) fn get_prev_hash(&self) -> String {
     self.prev_block_hash.clone()
   }
+
   pub fn get_hash(&self) -> String { self.hash.clone() }
+
   /// newGenesisBlock
   pub fn new_genesis_block(coinbase: Transaction) -> Block {
     Block::new_block(vec![coinbase], String::new(), 0).unwrap()
   }
+
   pub fn new_block(data: Vec<Transaction>, prev_block_hash: String, height: usize) -> Result<Block> {
     let timestamp = SystemTime::now()
      .duration_since(SystemTime::UNIX_EPOCH)?

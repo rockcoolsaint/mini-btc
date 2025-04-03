@@ -3,6 +3,7 @@ use crypto::sha2::Sha256;
 use failure::format_err;
 use log::error;
 use crate::errors::Result;
+use crate::wallets::Wallets;
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use crate::blockchain::Blockchain;

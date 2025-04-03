@@ -1,14 +1,18 @@
+use std::collections::HashMap;
+
 use bitcoincash_addr::{Address, HashType, Scheme};
-use crypto::digest::Digest;
+use crypto::ripemd160::Ripemd160;
+use crypto::{digest::Digest, sha2::Sha256};
 use crypto::ed25519;
+use log::info;
 use rand::RngCore;
 use rand::rngs::OsRng;
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Wallet {
-  pub secret_key: Vec<8>,
-  pub public_key: Vec<8>,
+  pub secret_key: Vec<u8>,
+  pub public_key: Vec<u8>,
 }
 
 impl Wallet {
@@ -74,7 +78,7 @@ impl Wallets {
   pub fn create_wallet(&mut self) -> String {
     let wallet = Wallet::new();
     let address = wallet.get_address();
-    slef.wallets.insert(address.clone(), wallet);
+    self.wallets.insert(address.clone(), wallet);
     info!("Create wallet: {}", address);
     address
   }
@@ -82,7 +86,7 @@ impl Wallets {
   pub fn get_all_addresses(&self) -> Vec<String> {
     let mut addresses = Vec::new();
     for (address, _) in &self.wallets {
-      address.push(address.clone())
+      addresses.push(address.clone())
     }
     addresses
   }

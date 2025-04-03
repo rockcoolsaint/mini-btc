@@ -5,6 +5,7 @@ use log::info;
 use crate::block::Block;
 use crate::errors::Result;
 use crate::transaction::Transaction;
+use crate::tx::TXOutput;
 // use sled;
 
 const GENESIS_COINBASE_DATA: &str =
@@ -48,7 +49,7 @@ impl Blockchain {
 
     let db = sled::open("data/blocks")?;
     info!("Creating new block databse");
-    let cbtx = Transaction::new_coinbase(address, String::from(GENESIS_COINBASE_DATA));
+    let cbtx = Transaction::new_coinbase(address, String::from(GENESIS_COINBASE_DATA))?;
     let genesis: Block = Block::new_genesis_block(cbtx);
     db.insert(genesis.get_hash(), bincode::serialize(&genesis)?)?;
     db.insert("LAST", genesis.get_hash().as_bytes())?;
@@ -115,7 +116,7 @@ impl Blockchain {
     let unspend_TXs = self.find_unspent_transactions(address);
     for tx in unspend_TXs {
       for out in &tx.vout {
-        if out.can_be_unlock_with(address) {
+        if out.can_be_unlock_with(&address) {
           utxos.push(out.clone());
         }
       }
@@ -135,25 +136,23 @@ impl Blockchain {
     let unspend_TXs = self.find_unspent_transactions(address);
 
     for tx in unspend_TXs {
-      for index in unspend_TXs {
-        for index in 0..tx.vout.len() {
-          if tx.vout[index].can_be_unlock_with(address) && accumulated < amount {
-            match unspent_outputs.get_mut(&tx.id) {
-              Some(v) => v.push(index as i32),
-              None => {
-                unspent_outputs.insert(tx.id.clone(), vec![index as i32]);
-              }
-            }
-            accumulated += tx.vout[index].value;
-
-            if accumulated >= amount {
-              return (accumulated, unspent_outputs);
+      for index in 0..tx.vout.len() {
+        if tx.vout[index].can_be_unlock_with(address) && accumulated < amount {
+          match unspent_outputs.get_mut(&tx.id) {
+            Some(v) => v.push(index as i32),
+            None => {
+              unspent_outputs.insert(tx.id.clone(), vec![index as i32]);
             }
           }
+          accumulated += tx.vout[index].value;
+
+          if accumulated >= amount {
+            return (accumulated, unspent_outputs);
+          }
         }
-        (accumulated, unspent_outputs)
       }
     }
+    (accumulated, unspent_outputs)
   }
 
   pub fn iter(&self) -> BlockchainIter {

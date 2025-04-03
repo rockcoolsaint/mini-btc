@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 /// TXInput represents a transaction input
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TXInput {
@@ -23,7 +25,7 @@ impl TXInput {
 
 impl TXOutput {
   /// CanBeUnlockedWith checks if the output can be unlocked with the provided data
-  pub fn can_unlock_output_with(&self, unlocking_data: &str) -> bool {
+  pub fn can_be_unlock_with(&self, unlocking_data: &str) -> bool {
     self.script_pub_key == unlocking_data
   }
 }
