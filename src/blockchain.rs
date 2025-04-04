@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use failure::format_err;
 use log::info;
 
 use crate::block::Block;
@@ -126,7 +127,7 @@ impl Blockchain {
   }
 
   /// FindUnspentTransactions returns a list of transactions containing unspent outputs
-  pub  fn find_spendable_outputs(
+  pub fn find_spendable_outputs(
     &self,
     address: &str,
     amount: i32,

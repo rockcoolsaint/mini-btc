@@ -1,4 +1,7 @@
+use bincode::serialize;
 use crypto::digest::Digest;
+use crypto::ed25519;
+use crypto::ripemd160::Ripemd160;
 use crypto::sha2::Sha256;
 use failure::format_err;
 use log::error;
@@ -56,10 +59,10 @@ impl Transaction {
         }
     }
 
-    let mut vout = vec![TXOutput {
+    let mut vout = vec![TXOutput::new(
       amount,
-      to.to_string(())?,
-    }];
+      to.to_string())?];
+
     if acc_v.0 > amount {
       vout.push(TXOutput::new(
         acc_v.0 - amount,
