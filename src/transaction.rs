@@ -37,7 +37,7 @@ impl Transaction {
     let mut pub_key_hash = wallet.public_key.clone();
     hash_pub_key(&mut pub_key_hash);
 
-    let acc_v = bc.find_spendable_outputs(from, amount);
+    let acc_v = bc.find_spendable_outputs(&pub_key_hash, amount);
 
     if acc_v.0 < amount {
       error!("Not Enough balance");
@@ -74,8 +74,7 @@ impl Transaction {
         vin,
         vout,
     };
-    tx.set_id()?;
-    // tx.id = tx.hash()?;
+    tx.id = tx.hash()?;
     // utxo.blockchain
     //     .sign_transacton(&mut tx, &wallet.secret_key)?;
   
@@ -92,24 +91,13 @@ impl Transaction {
       vin: vec![TXInput {
         txid: String::new(),
         vout: -1,
-        script_sig: data,
+        signature: Vec::new(),
+        pub_key: Vec::from(data.as_bytes())
       }],
-      vout: vec![TXOutput {
-        value: 100,
-        script_pub_key: to,
-      }],
+      vout: vec![TXOutput::new(100, to)?],
     };
-    tx.set_id()?;
+    tx.id = tx.hash()?;
     Ok(tx)
-  }
-
-  /// SetID sets ID of a transaction
-  fn set_id(&mut self) -> Result<()> {
-    let mut hasher = Sha256::new();
-    let data = bincode::serialize(self)?;
-    hasher.input(&data);
-    self.id = hasher.result_str();
-    Ok(())
   }
 
   /// IsCoinbase checks whether the transaction is coinbase
