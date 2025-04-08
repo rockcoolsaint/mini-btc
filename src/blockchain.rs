@@ -112,9 +112,9 @@ impl Blockchain {
   }
 
   /// FindUTXO finds and returns all unspent transaction outputs
-  pub fn find_UTXO(&self, address: &[u8]) -> HashMap<String, TXOutputs> {
+  pub fn find_UTXO(&self) -> HashMap<String, TXOutputs> {
     let mut utxos: HashMap<String, TXOutputs> = HashMap::new();
-    let unspend_TXs: HashMap<String, Vec<i32>> = HashMap::new();
+    let mut spend_txos: HashMap<String, Vec<i32>> = HashMap::new();
     for block in self.iter() {
         for tx in block.get_transaction() {
             for index in 0..tx.vout.len() {

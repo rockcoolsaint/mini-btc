@@ -41,6 +41,11 @@ impl TXInput {
 }
 
 impl TXOutput {
+  /// IsLockedWithKey checks if the output can be used by the owner of the pubkey
+  pub fn is_locked_with_key(&self, pub_key_hash: &[u8]) -> bool {
+      self.pub_key_hash == pub_key_hash
+  }
+
   /// CanBeUnlockedWith checks if the output can be unlocked with the provided data
   pub fn can_be_unlock_with(&self, unlocking_data: &[u8]) -> bool {
     self.pub_key_hash == unlocking_data

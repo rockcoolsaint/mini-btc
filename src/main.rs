@@ -10,6 +10,7 @@ mod transaction;
 mod tx;
 mod wallets;
 mod utxoset;
+mod server;
 
 fn main() -> Result<()>{
     let mut cli = Cli::new()?;

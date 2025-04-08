@@ -31,7 +31,7 @@ impl UTXOSet {
   /// FindUnspentTransactions returns a list of transactions containing unspent outputs
   pub fn find_spendable_outputs(
     &self,
-    address: &[u8],
+    pub_key_hash: &[u8],
     amount: i32,
   ) -> Result<(i32, HashMap<String, Vec<i32>>)> {
     let mut unspent_outputs: HashMap<String, Vec<i32>> = HashMap::new();
