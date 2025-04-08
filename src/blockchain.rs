@@ -6,7 +6,7 @@ use log::info;
 use crate::block::Block;
 use crate::errors::Result;
 use crate::transaction::Transaction;
-use crate::tx::TXOutput;
+use crate::tx::{TXOutput, TXOutputs};
 // use sled;
 
 const GENESIS_COINBASE_DATA: &str =
