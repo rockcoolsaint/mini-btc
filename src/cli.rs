@@ -3,6 +3,7 @@ use bitcoincash_addr::Address;
 use clap::{arg, Command};
 use crate::blockchain::Blockchain;
 use crate::errors::Result;
+use crate::server::Server;
 // use crate::server::Server;
 use crate::transaction::Transaction;
 use crate::utxoset::UTXOSet;

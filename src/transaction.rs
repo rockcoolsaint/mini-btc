@@ -6,7 +6,8 @@ use crypto::sha2::Sha256;
 use failure::format_err;
 use log::error;
 use crate::errors::Result;
-use crate::wallets::Wallets;
+use crate::utxoset::UTXOSet;
+use crate::wallets::{Wallet, Wallets};
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use crate::blockchain::Blockchain;
@@ -22,22 +23,13 @@ pub struct Transaction {
 
 impl Transaction {
   /// NewUTXOTransaction creates a new transaction
-  pub fn new_UTXO(from: &str, to: &str, amount: i32, bc: &Blockchain) -> Result<Transaction> {
+  pub fn new_UTXO(wallet: &Wallet, to: &str, amount: i32, utxo: &UTXOSet) -> Result<Transaction> {
     let mut vin = Vec::new();
-
-    let wallets = Wallets::new()?;
-    let wallet = match wallets.get_wallet(from) {
-      Some(w) => w,
-      None => return Err(format_err!("from wallet not found")),
-    };
-    if let None = wallets.get_wallet(&to) {
-      return Err(format_err!("to wallet not found"));
-    };
 
     let mut pub_key_hash = wallet.public_key.clone();
     hash_pub_key(&mut pub_key_hash);
 
-    let acc_v = bc.find_spendable_outputs(&pub_key_hash, amount)?;
+    let acc_v = utxo.find_spendable_outputs(&pub_key_hash, amount)?;
 
     if acc_v.0 < amount {
       error!("Not Enough balance");
@@ -66,7 +58,7 @@ impl Transaction {
     if acc_v.0 > amount {
       vout.push(TXOutput::new(
         acc_v.0 - amount,
-        from.to_string())?)
+        wallet.get_address())?)
     }
 
     let mut tx = Transaction {
